@@ -1,0 +1,52 @@
+Schedule:
+  type: 'linear'
+  beta_start: 0.0001
+  beta_end: 0.02
+  diffusion_step: 1000
+
+Dataset:
+  dataset: 'LSUN'
+  category: 'bedroom'
+  image_size: 256
+  channels: 3
+  logit_transform: false
+  uniform_dequantization: false
+  gaussian_dequantization: false
+  random_flip: true
+  rescaled: true
+  num_workers: 32
+  batch_size: 64
+
+Model:
+  type: "simple"
+  in_channels: 3
+  out_ch: 3
+  ch: 128
+  ch_mult: [ 1, 1, 2, 2, 4, 4 ]
+  num_res_blocks: 2
+  attn_resolutions: [ 16, ]
+  dropout: 0.0
+  var_type: fixedsmall
+  resamp_with_conv: True
+  image_size: 256
+
+Train:
+  epoch: 10000
+  loss_type: 'linear'
+  ema_rate: 0.999
+  ema: True
+
+Sample:
+  mpi4py: false
+  batch_size: 32
+  last_only: True
+  total_num: 5000
+
+Optim:
+  weight_decay: 0.000
+  optimizer: 'adam'
+  lr: 0.00002
+  beta1: 0.9
+  amsgrad: false
+  eps: 0.00000001
+

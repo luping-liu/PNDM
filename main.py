@@ -16,17 +16,17 @@ def args_and_config():
 
     parser.add_argument("--runner", type=str, default='train',
                         help="Choose the mode of runner")
-    parser.add_argument("--config", type=str, default='dev.yml',
+    parser.add_argument("--config", type=str, default='ddim-celeba.yml',
                         help="Choose the config file")
     parser.add_argument("--method", type=str, default='F-PNDM',
                         help="Choose the numerical methods (DDIM, FON, S-PNDM, F-PNDM)")
     parser.add_argument("--sample_step", type=int, default=50,
                         help="Choose the total generation step")
-    parser.add_argument("--gpu", type=str, default='cuda:3',
+    parser.add_argument("--gpu", type=str, default='cuda',
                         help="Choose the gpu to use")
     parser.add_argument("--image_path", type=str, default='temp/results',
                         help="Choose the path to save images")
-    parser.add_argument("--model_path", type=str, default='temp/models/ddim/ema_cifar10.ckpt',
+    parser.add_argument("--model_path", type=str, default='temp/models/ddim/ema_celeba.ckpt',
                         help="Choose the path of model")
 
     args = parser.parse_args()
@@ -45,6 +45,13 @@ def check_config():
 
 if __name__ == "__main__":
     args, config = args_and_config()
+
+    if args.runner == 'sample' and config['Sample']['mpi4py']:
+        from mpi4py import MPI
+
+        comm = MPI.COMM_WORLD
+        mpi_rank = comm.Get_rank()
+        os.environ['CUDA_VISIBLE_DEVICES'] = str(mpi_rank)
 
     device = th.device(args.gpu)
     schedule = Schedule(args, config['Schedule'])

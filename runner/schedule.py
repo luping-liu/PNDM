@@ -48,4 +48,3 @@ class Schedule(object):
         img_next = self.method(img_n, t_start, t_end, model, self.alphas_cump, self.ets)
 
         return img_next
-

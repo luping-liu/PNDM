@@ -3,7 +3,6 @@ import sys
 import tqdm
 import time
 import torch as th
-import torch.nn as nn
 import torch.optim as optimi
 import torch.utils.data as data
 import torchvision.utils as tvu
@@ -39,6 +38,8 @@ class Runner(object):
     def train(self):
         schedule = self.schedule
         model = self.model
+        model = th.nn.DataParallel(model)
+
         optim = get_optim(model.parameters(), self.config['Optim'])
 
         config = self.config['Dataset']
@@ -84,13 +85,17 @@ class Runner(object):
 
     def sample(self):
         config = self.config['Sample']
+        mpi_rank = 0
         if config['mpi4py']:
-            import mpi4py
+            from mpi4py import MPI
+            comm = MPI.COMM_WORLD
+            mpi_rank = comm.Get_rank()
+
         schedule = self.schedule
         model = self.model
         device = self.device
 
-        model.load_state_dict(th.load(self.args.model_path), strict=True)
+        model.load_state_dict(th.load(self.args.model_path, map_location=device), strict=True)
         model.eval()
 
         n = config['batch_size']
@@ -103,7 +108,12 @@ class Runner(object):
 
         config = self.config['Dataset']
         with th.no_grad():
-            for _ in tqdm.tqdm(range(total_num // n + 1)):
+            if mpi_rank == 0:
+                my_iter = tqdm.tqdm(range(total_num // n + 1), ncols=120)
+            else:
+                my_iter = range(total_num // n + 1)
+
+            for _ in my_iter:
                 noise = th.randn(n, config['channels'], config['image_size'],
                                  config['image_size'], device=self.device)
                 imgs = [noise]
@@ -124,7 +134,7 @@ class Runner(object):
                 for i in range(img.shape[0]):
                     if image_num+i > total_num:
                         break
-                    tvu.save_image(img[i], os.path.join(self.args.image_path, f"{image_num+i}.png"))
+                    tvu.save_image(img[i], os.path.join(self.args.image_path, f"{mpi_rank}-{image_num+i}.png"))
 
                 image_num += n
 

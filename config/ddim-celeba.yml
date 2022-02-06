@@ -1,0 +1,52 @@
+Schedule:
+  type: 'linear'
+  beta_start: 0.0001
+  beta_end: 0.02
+  diffusion_step: 1000
+
+Dataset:
+  dataset: 'CELEBA'
+  image_size: 64
+  channels: 3
+  logit_transform: false
+  uniform_dequantization: false
+  gaussian_dequantization: false
+  random_flip: true
+  rescaled: true
+  num_workers: 6
+  batch_size: 64
+
+Model:
+  type: "simple"
+  in_channels: 3
+  out_ch: 3
+  ch: 128
+  ch_mult: [ 1, 2, 2, 2, 4 ]
+  num_res_blocks: 2
+  attn_resolutions: [ 16, ]
+  dropout: 0.1
+  var_type: fixedlarge
+  resamp_with_conv: True
+  image_size: 64
+
+Train:
+  epoch: 10000
+  loss_type: 'linear'
+  ema_rate: 0.9999
+  ema: True
+
+Sample:
+  mpi4py: true
+  batch_size: 128
+  last_only: True
+  total_num: 12500
+
+Optim:
+  weight_decay: 0.000
+  optimizer: 'adam'
+  lr: 0.0002
+  beta1: 0.9
+  amsgrad: false
+  eps: 0.00000001
+  grad_clip: 1.0
+
