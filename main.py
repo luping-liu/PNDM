@@ -22,8 +22,8 @@ def args_and_config():
                         help="Choose the numerical methods (DDIM, FON, S-PNDM, F-PNDM)")
     parser.add_argument("--sample_step", type=int, default=50,
                         help="Choose the total generation step")
-    parser.add_argument("--gpu", type=str, default='cuda',
-                        help="Choose the gpu to use")
+    parser.add_argument("--device", type=str, default='cuda',
+                        help="Choose the device to use")
     parser.add_argument("--image_path", type=str, default='temp/results',
                         help="Choose the path to save images")
     parser.add_argument("--model_path", type=str, default='temp/models/ddim/ema_celeba.ckpt',
@@ -53,7 +53,7 @@ if __name__ == "__main__":
         mpi_rank = comm.Get_rank()
         os.environ['CUDA_VISIBLE_DEVICES'] = str(mpi_rank)
 
-    device = th.device(args.gpu)
+    device = th.device(args.device)
     schedule = Schedule(args, config['Schedule'])
     model = Model(args, config['Model']).to(device)
 

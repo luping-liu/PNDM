@@ -30,7 +30,7 @@ class Runner(object):
         self.args = args
         self.config = config
         self.diffusion_step = 1000
-        self.device = th.device(args.gpu)
+        self.device = th.device(args.device)
 
         self.schedule = schedule
         self.model = model

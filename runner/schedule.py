@@ -24,7 +24,7 @@ def get_schedule(args, config):
 
 class Schedule(object):
     def __init__(self, args, config):
-        device = th.device(args.gpu)
+        device = th.device(args.device)
         betas, alphas_cump = get_schedule(args, config)
 
         self.betas, self.alphas_cump = betas.to(device), alphas_cump.to(device)
