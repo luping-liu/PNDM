@@ -1,7 +1,10 @@
 # Pseudo Numerical Methods for Diffusion Models on Manifolds (PNDM)
-Luping Liu, Yi Ren, Zhijie Lin, Zhou Zhao, Zhejiang University
 
-This repo contains a PyTorch implementation for the paper [Pseudo Numerical Methods for Diffusion Models on Manifolds](https://openreview.net/forum?id=PlKWVd2yBkY).
+[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/pseudo-numerical-methods-for-diffusion-models/image-generation-on-celeba-64x64)](https://paperswithcode.com/sota/image-generation-on-celeba-64x64?p=pseudo-numerical-methods-for-diffusion-models)
+
+This repo is the official PyTorch implementation for the paper [Pseudo Numerical Methods for Diffusion Models on Manifolds](https://openreview.net/forum?id=PlKWVd2yBkY)
+
+by Luping Liu, Yi Ren, Zhijie Lin, Zhou Zhao (Zhejiang University).
 
 ## How to run the code
 
