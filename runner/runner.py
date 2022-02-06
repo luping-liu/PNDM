@@ -64,7 +64,7 @@ class Runner(object):
             optim.load_state_dict(train_state[1])
             epoch, step = train_state[2:4]
             if ema is not None:
-                ema_state = th.load(os.path.join(self.args.train_path, 'train.pth'), map_location=self.device)
+                ema_state = th.load(os.path.join(self.args.train_path, 'ema.pth'), map_location=self.device)
                 ema.load_state_dict(ema_state)
 
         for epoch in range(epoch, config['epoch']):
@@ -72,8 +72,8 @@ class Runner(object):
                 n = img.shape[0]
                 model.train()
                 step += 1
-                t = th.randint(low=0, high=self.total_step, size=(n // 2 + 1,))
-                t = th.cat([t, self.total_step - t - 1], dim=0)[:n].to(self.device)
+                t = th.randint(low=0, high=self.diffusion_step, size=(n // 2 + 1,))
+                t = th.cat([t, self.diffusion_step - t - 1], dim=0)[:n].to(self.device)
                 img = img.to(self.device)
 
                 img_n, noise = schedule.diffusion(img, t)
@@ -88,6 +88,10 @@ class Runner(object):
 
                 optim.zero_grad()
                 loss.backward()
+                try:
+                    th.nn.utils.clip_grad_norm_(model.parameters(), self.config['Optim']['grad_clip'])
+                except Exception:
+                    pass
                 optim.step()
 
                 if ema is not None:
@@ -95,7 +99,19 @@ class Runner(object):
 
                 if step % 10 == 0:
                     tb_logger.add_scalar('loss', loss, global_step=step)
-                    # print(step, loss.item())
+                if step % 50 == 0:
+                    print(step, loss.item())
+                if step % 500 == 0:
+                    config = self.config['Dataset']
+                    skip = self.diffusion_step // self.args.sample_step
+                    seq = range(0, self.diffusion_step, skip)
+                    noise = th.randn(16, config['channels'], config['image_size'],
+                                     config['image_size'], device=self.device)
+                    img = self.sample_image(noise, seq, model)
+                    img = th.clamp(img, -1.0, 1.0)
+                    tb_logger.add_images('sample', img, global_step=step)
+                    config = self.config['Train']
+
                 if step % 10000 == 0:
                     train_state = [model.state_dict(), optim.state_dict(), epoch, step]
                     th.save(train_state, os.path.join(self.args.train_path, 'train.pth'))
@@ -110,7 +126,6 @@ class Runner(object):
             comm = MPI.COMM_WORLD
             mpi_rank = comm.Get_rank()
 
-        schedule = self.schedule
         model = self.model
         device = self.device
 
@@ -126,36 +141,43 @@ class Runner(object):
         image_num = 0
 
         config = self.config['Dataset']
+        if mpi_rank == 0:
+            my_iter = tqdm.tqdm(range(total_num // n + 1), ncols=120)
+        else:
+            my_iter = range(total_num // n + 1)
+
+        for _ in my_iter:
+            noise = th.randn(n, config['channels'], config['image_size'],
+                             config['image_size'], device=self.device)
+
+            img = self.sample_image(noise, seq)
+
+            img = inverse_data_transform(config, img)
+            for i in range(img.shape[0]):
+                if image_num+i > total_num:
+                    break
+                tvu.save_image(img[i], os.path.join(self.args.image_path, f"{mpi_rank}-{image_num+i}.png"))
+
+            image_num += n
+
+    def sample_image(self, noise, seq, model):
         with th.no_grad():
-            if mpi_rank == 0:
-                my_iter = tqdm.tqdm(range(total_num // n + 1), ncols=120)
-            else:
-                my_iter = range(total_num // n + 1)
+            imgs = [noise]
+            seq_next = [-1] + list(seq[:-1])
 
-            for _ in my_iter:
-                noise = th.randn(n, config['channels'], config['image_size'],
-                                 config['image_size'], device=self.device)
-                imgs = [noise]
-                start = True
+            start = True
+            n = noise.shape[0]
 
-                for i, j in zip(reversed(seq), reversed(seq_next)):
-                    t = (th.ones(n) * i).to(device)
-                    t_next = (th.ones(n) * j).to(device)
+            for i, j in zip(reversed(seq), reversed(seq_next)):
+                t = (th.ones(n) * i).to(self.device)
+                t_next = (th.ones(n) * j).to(self.device)
 
-                    img_t = imgs[-1].to(self.device)
-                    img_next = schedule.denoising(img_t, t_next, t, model, start)
-                    start = False
+                img_t = imgs[-1].to(self.device)
+                img_next = self.schedule.denoising(img_t, t_next, t, model, start)
+                start = False
 
-                    imgs.append(img_next.to('cpu'))
+                imgs.append(img_next.to('cpu'))
 
-                img = imgs[-1]
-                img = inverse_data_transform(config, img)
-                for i in range(img.shape[0]):
-                    if image_num+i > total_num:
-                        break
-                    tvu.save_image(img[i], os.path.join(self.args.image_path, f"{mpi_rank}-{image_num+i}.png"))
+            img = imgs[-1]
 
-                image_num += n
-
-    def sample_image(self):
-        pass
+            return img

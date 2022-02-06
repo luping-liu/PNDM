@@ -14,9 +14,9 @@ from model.ddim import Model
 def args_and_config():
     parser = argparse.ArgumentParser()
 
-    parser.add_argument("--runner", type=str, default='train',
+    parser.add_argument("--runner", type=str, default='sample',
                         help="Choose the mode of runner")
-    parser.add_argument("--config", type=str, default='ddim-celeba.yml',
+    parser.add_argument("--config", type=str, default='ddim-cifar10.yml',
                         help="Choose the config file")
     parser.add_argument("--method", type=str, default='F-PNDM',
                         help="Choose the numerical methods (DDIM, FON, S-PNDM, F-PNDM)")
@@ -26,7 +26,7 @@ def args_and_config():
                         help="Choose the device to use")
     parser.add_argument("--image_path", type=str, default='temp/sample',
                         help="Choose the path to save images")
-    parser.add_argument("--model_path", type=str, default='temp/models/ddim/ema_celeba.ckpt',
+    parser.add_argument("--model_path", type=str, default='temp/models/ddim/ema_cifar10.ckpt',
                         help="Choose the path of model")
     parser.add_argument("--restart", action="store_true",
                         help="Restart a previous training process")
@@ -66,5 +66,5 @@ if __name__ == "__main__":
     if args.runner == 'train':
         runner.train()
     elif args.runner == 'sample':
-        runner.sample()
+        runner.sample_fid()
 
