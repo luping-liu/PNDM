@@ -6,6 +6,7 @@ import torch as th
 import torch.optim as optimi
 import torch.utils.data as data
 import torchvision.utils as tvu
+import torch.utils.tensorboard as tb
 import numpy as np
 
 from dataset import get_dataset, inverse_data_transform
@@ -54,7 +55,18 @@ class Runner(object):
         else:
             ema = None
 
+        tb_logger = tb.SummaryWriter('temp/tensorboard')
         epoch, step = 0, 0
+
+        if self.args.restart:
+            train_state = th.load(os.path.join(self.args.train_path, 'train.pth'), map_location=self.device)
+            model.load_state_dict(train_state[0])
+            optim.load_state_dict(train_state[1])
+            epoch, step = train_state[2:4]
+            if ema is not None:
+                ema_state = th.load(os.path.join(self.args.train_path, 'train.pth'), map_location=self.device)
+                ema.load_state_dict(ema_state)
+
         for epoch in range(epoch, config['epoch']):
             for i, (img, y) in enumerate(train_loader):
                 n = img.shape[0]
@@ -77,13 +89,20 @@ class Runner(object):
                 optim.zero_grad()
                 loss.backward()
                 optim.step()
-                if step % 50 == 0:
-                    print(step, loss.item())
 
                 if ema is not None:
                     ema.update(model)
 
-    def sample(self):
+                if step % 10 == 0:
+                    tb_logger.add_scalar('loss', loss, global_step=step)
+                    # print(step, loss.item())
+                if step % 10000 == 0:
+                    train_state = [model.state_dict(), optim.state_dict(), epoch, step]
+                    th.save(train_state, os.path.join(self.args.train_path, 'train.pth'))
+                    if ema is not None:
+                        th.save(ema.state_dict(), os.path.join(self.args.train_path, 'ema.pth'))
+
+    def sample_fid(self):
         config = self.config['Sample']
         mpi_rank = 0
         if config['mpi4py']:
@@ -138,3 +157,5 @@ class Runner(object):
 
                 image_num += n
 
+    def sample_image(self):
+        pass

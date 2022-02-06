@@ -24,10 +24,15 @@ def args_and_config():
                         help="Choose the total generation step")
     parser.add_argument("--device", type=str, default='cuda',
                         help="Choose the device to use")
-    parser.add_argument("--image_path", type=str, default='temp/results',
+    parser.add_argument("--image_path", type=str, default='temp/sample',
                         help="Choose the path to save images")
     parser.add_argument("--model_path", type=str, default='temp/models/ddim/ema_celeba.ckpt',
                         help="Choose the path of model")
+    parser.add_argument("--restart", action="store_true",
+                        help="Restart a previous training process")
+    parser.add_argument("--train_path", type=str, default='temp/train',
+                        help="Choose the path to save training status")
+
 
     args = parser.parse_args()
 
