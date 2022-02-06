@@ -10,8 +10,43 @@ def choose_method(name):
         return gen_order_2
     elif name == 'F-PNDM':
         return gen_order_4
+    elif name == 'FON':
+        return gen_fon
     else:
         return None
+
+
+def gen_fon(img, t, t_next, model, alphas_cump, ets):
+    t_list = [t, (t + t_next) / 2.0, t_next]
+    if len(ets) > 2:
+        noise = model(img, t)
+        img_next = transfer(img, t, t-1, noise, alphas_cump)
+        delta = img_next - img
+        ets.append(delta)
+    else:
+        noise = model(img, t_list[0])
+        img_ = transfer(img, t, t - 1, noise, alphas_cump)
+        delta_1 = img_ - img
+        ets.append(delta_1)
+
+        img_2 = img + delta_1 * (t - t_next) / 2.0
+        noise = model(img_2, t_next[1])
+        img_ = transfer(img, t, t - 1, noise, alphas_cump)
+        delta_2 = img_ - img
+
+        img_3 = img + delta_2 * (t - t_next) / 2.0
+        noise = model(img_3, t_next[1])
+        img_ = transfer(img, t, t - 1, noise, alphas_cump)
+        delta_3 = img_ - img
+
+        img_4 = img + delta_3 * (t - t_next)
+        noise = model(img_4, t_next[2])
+        img_ = transfer(img, t, t - 1, noise, alphas_cump)
+        delta_4 = img_ - img
+        delta = (1 / 6.0) * (delta_1 + 2*delta_2 + 2*delta_3 + delta_4)
+
+    img_next = img + delta * (t - t_next)
+    return img_next
 
 
 def gen_order_4(img, t, t_next, model, alphas_cump, ets):
