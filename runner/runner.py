@@ -30,7 +30,7 @@ class Runner(object):
     def __init__(self, args, config, schedule, model):
         self.args = args
         self.config = config
-        self.diffusion_step = 1000
+        self.diffusion_step = config['Schedule']['diffusion_step']
         self.device = th.device(args.device)
 
         self.schedule = schedule
@@ -150,7 +150,7 @@ class Runner(object):
             noise = th.randn(n, config['channels'], config['image_size'],
                              config['image_size'], device=self.device)
 
-            img = self.sample_image(noise, seq)
+            img = self.sample_image(noise, seq, model)
 
             img = inverse_data_transform(config, img)
             for i in range(img.shape[0]):
@@ -179,5 +179,4 @@ class Runner(object):
                 imgs.append(img_next.to('cpu'))
 
             img = imgs[-1]
-
             return img

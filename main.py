@@ -9,6 +9,7 @@ import torch as th
 from runner.schedule import Schedule
 from runner.runner import Runner
 from model.ddim import Model
+# from model.iDDPM.unet import UNetModel
 
 
 def args_and_config():
@@ -56,7 +57,7 @@ if __name__ == "__main__":
 
         comm = MPI.COMM_WORLD
         mpi_rank = comm.Get_rank()
-        os.environ['CUDA_VISIBLE_DEVICES'] = str(mpi_rank)
+        os.environ['CUDA_VISIBLE_DEVICES'] = str(mpi_rank+2)
 
     device = th.device(args.device)
     schedule = Schedule(args, config['Schedule'])

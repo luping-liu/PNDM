@@ -1,0 +1,61 @@
+Schedule:
+  type: 'cosine'
+  diffusion_step: 4000
+  learn_sigma: true
+  sigma_small: false
+  noise_schedule: cosine
+  use_kl: false
+  predict_xstart: false
+  rescale_timesteps: true
+  rescale_learned_sigmas: true
+  timestep_respacing: ddim
+
+Dataset:
+  dataset: 'CIFAR10'
+  image_size: 32
+  channels: 3
+  batch_size: 64
+  logit_transform: false
+  uniform_dequantization: false
+  gaussian_dequantization: false
+  random_flip: true
+  rescaled: true
+  num_workers: 6
+
+Model:
+  in_channels: 3
+  model_channels: 128
+  out_channels: 6
+  num_res_blocks: 3
+  attention_resolutions: [ 2, 4 ]
+  dropout: 0.3
+  channel_mult: [ 1, 2, 2, 2 ]
+  dims: 2
+  conv_resample: true
+  use_scale_shift_norm: true
+  use_checkpoint: false
+  num_heads: 4
+  num_heads_upsample: 4
+  diffusion_step: 4000
+
+Train:
+  epoch: 1000
+  loss_type: 'linear'
+  ema_rate: 0.9999
+  ema: True
+
+Sample:
+  mpi4py: true
+  batch_size: 512
+  last_only: True
+  total_num: 12500
+
+Optim:
+  weight_decay: 0.000
+  optimizer: 'adam'
+  lr: 0.0001
+  beta1: 0.9
+  amsgrad: false
+  eps: 0.00000001
+  grad_clip: 1.0
+

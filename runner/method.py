@@ -29,23 +29,23 @@ def gen_fon(img, t, t_next, model, alphas_cump, ets):
         delta_1 = img_ - img
         ets.append(delta_1)
 
-        img_2 = img + delta_1 * (t - t_next) / 2.0
-        noise = model(img_2, t_next[1])
+        img_2 = img + delta_1 * (t - t_next).view(-1, 1, 1, 1) / 2.0
+        noise = model(img_2, t_list[1])
         img_ = transfer(img, t, t - 1, noise, alphas_cump)
         delta_2 = img_ - img
 
-        img_3 = img + delta_2 * (t - t_next) / 2.0
-        noise = model(img_3, t_next[1])
+        img_3 = img + delta_2 * (t - t_next).view(-1, 1, 1, 1) / 2.0
+        noise = model(img_3, t_list[1])
         img_ = transfer(img, t, t - 1, noise, alphas_cump)
         delta_3 = img_ - img
 
-        img_4 = img + delta_3 * (t - t_next)
-        noise = model(img_4, t_next[2])
+        img_4 = img + delta_3 * (t - t_next).view(-1, 1, 1, 1)
+        noise = model(img_4, t_list[2])
         img_ = transfer(img, t, t - 1, noise, alphas_cump)
         delta_4 = img_ - img
         delta = (1 / 6.0) * (delta_1 + 2*delta_2 + 2*delta_3 + delta_4)
 
-    img_next = img + delta * (t - t_next)
+    img_next = img + delta * (t - t_next).view(-1, 1, 1, 1)
     return img_next
 
 

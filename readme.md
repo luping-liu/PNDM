@@ -39,7 +39,7 @@ All checkpoints of models and precalculated statistics for FID are provided in t
 
 ## References
 If you find the code useful for your research, please consider citing:
-```
+```bib
 @inproceedings{
     liu2022pseudo,
     title={Pseudo Numerical Methods for Diffusion Models on Manifolds},

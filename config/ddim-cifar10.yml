@@ -36,10 +36,10 @@ Train:
   ema: True
 
 Sample:
-  mpi4py: false
+  mpi4py: true
   batch_size: 512
   last_only: True
-  total_num: 5000
+  total_num: 25000
 
 Optim:
   weight_decay: 0.000

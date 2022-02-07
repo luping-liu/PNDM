@@ -1,5 +1,5 @@
 import sys
-
+import math
 import torch as th
 import torch.nn as nn
 import numpy as np
@@ -12,6 +12,8 @@ def get_schedule(args, config):
         betas = (np.linspace(config['beta_start'] ** 0.5, config['beta_end'] ** 0.5, config['diffusion_step'], dtype=np.float64) ** 2)
     elif config['type'] == "linear":
         betas = np.linspace(config['beta_start'], config['beta_end'], config['diffusion_step'], dtype=np.float64)
+    elif config['type'] == 'cosine':
+        betas = betas_for_alpha_bar(config['diffusion_step'], lambda t: math.cos((t + 0.008) / 1.008 * math.pi / 2) ** 2)
     else:
         betas = None
 
@@ -20,6 +22,15 @@ def get_schedule(args, config):
     alphas_cump = alphas.cumprod(dim=0)
 
     return betas, alphas_cump
+
+
+def betas_for_alpha_bar(num_diffusion_timesteps, alpha_bar, max_beta=0.999):
+    betas = []
+    for i in range(num_diffusion_timesteps):
+        t1 = i / num_diffusion_timesteps
+        t2 = (i + 1) / num_diffusion_timesteps
+        betas.append(min(1 - alpha_bar(t2) / alpha_bar(t1), max_beta))
+    return np.array(betas)
 
 
 class Schedule(object):
