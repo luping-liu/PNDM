@@ -23,6 +23,7 @@ Dataset:
   num_workers: 6
 
 Model:
+  struc: 'iDDPM'
   in_channels: 3
   model_channels: 128
   out_channels: 6

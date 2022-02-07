@@ -17,6 +17,7 @@ Dataset:
   num_workers: 6
 
 Model:
+  struc: 'DDIM'
   type: "simple"
   image_size: 32
   in_channels: 3

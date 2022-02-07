@@ -7,9 +7,9 @@ by Luping Liu, Yi Ren, Zhijie Lin, Zhou Zhao (Zhejiang University).
 
 ## What does this code do?
 This code is a generic framework for DDIM-like models including:
-- [Pseudo Numerical Methods for Diffusion Models on Manifolds (PNDM)](https://openreview.net/forum?id=PlKWVd2yBkY)
-- [Denoising Diffusion Implicit Models (DDIM)](https://arxiv.org/abs/2010.02502)
-- [Improved Denoising Diffusion Probabilistic Models (iDDPM)](https://arxiv.org/abs/2102.09672)
+- [x] [Pseudo Numerical Methods for Diffusion Models on Manifolds (PNDM)](https://openreview.net/forum?id=PlKWVd2yBkY)
+- [x] [Denoising Diffusion Implicit Models (DDIM)](https://arxiv.org/abs/2010.02502)
+- [x] [Improved Denoising Diffusion Probabilistic Models (iDDPM)](https://arxiv.org/abs/2102.09672)
 
 ## How to run the code
 
@@ -23,10 +23,9 @@ Tip: mpi4py can make the generation process faster using multi-gpus. It is not n
 ### Usage
 Evaluate our models through main.py.
 ```bash
-python main.py --runner sample --model DDIM --method F-PNDM --sample_step 50 --device cuda --config ddim-cifar10.yml --image_path temp/results --model_path temp/models/ddim/ema_cifar10.ckpt
+python main.py --runner sample --method F-PNDM --sample_step 50 --device cuda --config ddim-cifar10.yml --image_path temp/results --model_path temp/models/ddim/ema_cifar10.ckpt
 ```
 - runner (train|sample): choose the mode of runner 
-- model (DDIM|iDDPM): choose the model's structure
 - method (DDIM|FON|S-PNDM|F-PNDM): choose the numerical methods
 - sample_step: choose the total generation step
 - device (cpu|cuda:0): choose the device to use

@@ -18,6 +18,7 @@ Dataset:
   batch_size: 64
 
 Model:
+  struc: 'DDIM'
   type: "simple"
   in_channels: 3
   out_ch: 3

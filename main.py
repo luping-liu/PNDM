@@ -16,7 +16,7 @@ def args_and_config():
 
     parser.add_argument("--runner", type=str, default='sample',
                         help="Choose the mode of runner")
-    parser.add_argument("--config", type=str, default='ddim-cifar10.yml',
+    parser.add_argument("--config", type=str, default='iddpm-cifar10.yml',
                         help="Choose the config file")
     parser.add_argument("--model", type=str, default='DDIM',
                         help="Choose the model's structure (DDIM, iDDPM)")
@@ -62,10 +62,12 @@ if __name__ == "__main__":
 
     device = th.device(args.device)
     schedule = Schedule(args, config['Schedule'])
-    if args.model == 'DDIM':
+    if config['Model']['struc'] == 'DDIM':
         model = Model(args, config['Model']).to(device)
-    elif args.model == 'iDDPM':
+    elif config['Model']['struc'] == 'iDDPM':
         model = UNetModel(args, config['Model']).to(device)
+    else:
+        model = None
 
     runner = Runner(args, config, schedule, model)
     if args.runner == 'train':
