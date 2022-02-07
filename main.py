@@ -1,4 +1,3 @@
-import configparser
 import argparse
 import yaml
 import sys
