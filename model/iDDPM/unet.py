@@ -334,7 +334,6 @@ class UNetModel(nn.Module):
         self.use_checkpoint = use_checkpoint = config['use_checkpoint']
         self.num_heads = num_heads = config['num_heads']
         self.num_heads_upsample = num_heads_upsample = config['num_heads_upsample']
-        self.diffusion_step = config['diffusion_step']
 
         dims = config['dims']
         use_scale_shift_norm = config['use_scale_shift_norm']
@@ -476,7 +475,6 @@ class UNetModel(nn.Module):
         :param y: an [N] Tensor of labels, if class-conditional.
         :return: an [N x C x ...] Tensor of outputs.
         """
-        timesteps = timesteps * 1000.0 / self.diffusion_step
         assert (y is not None) == (
             self.num_classes is not None
         ), "must specify y if and only if the model is class-conditional"

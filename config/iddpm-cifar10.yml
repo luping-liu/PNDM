@@ -1,6 +1,6 @@
 Schedule:
   type: 'cosine'
-  diffusion_step: 4000
+  diffusion_step: 1000
   learn_sigma: true
   sigma_small: false
   noise_schedule: cosine
@@ -36,7 +36,6 @@ Model:
   use_checkpoint: false
   num_heads: 4
   num_heads_upsample: 4
-  diffusion_step: 4000
 
 Train:
   epoch: 1000
@@ -48,7 +47,7 @@ Sample:
   mpi4py: true
   batch_size: 512
   last_only: True
-  total_num: 12500
+  total_num: 2500
 
 Optim:
   weight_decay: 0.000

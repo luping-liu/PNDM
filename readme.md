@@ -18,9 +18,10 @@ Tip: mpi4py can make the generation process faster using multi-gpus. It is not n
 ### Usage
 Evaluate our models through main.py.
 ```bash
-python main.py --runner sample --method F-PNDM --sample_step 50 --device cuda --config ddim-cifar10.yml --image_path temp/results --model_path temp/models/ddim/ema_cifar10.ckpt
+python main.py --runner sample --model DDIM --method F-PNDM --sample_step 50 --device cuda --config ddim-cifar10.yml --image_path temp/results --model_path temp/models/ddim/ema_cifar10.ckpt
 ```
 - runner (train|sample): choose the mode of runner 
+- model (DDIM|iDDPM): choose the model's structure
 - method (DDIM|FON|S-PNDM|F-PNDM): choose the numerical methods
 - sample_step: choose the total generation step
 - device (cpu|cuda:0): choose the device to use
@@ -40,8 +41,7 @@ All checkpoints of models and precalculated statistics for FID are provided in t
 ## References
 If you find the code useful for your research, please consider citing:
 ```bib
-@inproceedings{
-    liu2022pseudo,
+@inproceedings{liu2022pseudo,
     title={Pseudo Numerical Methods for Diffusion Models on Manifolds},
     author={Luping Liu and Yi Ren and Zhijie Lin and Zhou Zhao},
     booktitle={International Conference on Learning Representations},

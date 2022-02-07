@@ -9,7 +9,7 @@ import torch as th
 from runner.schedule import Schedule
 from runner.runner import Runner
 from model.ddim import Model
-# from model.iDDPM.unet import UNetModel
+from model.iDDPM.unet import UNetModel
 
 
 def args_and_config():
@@ -19,6 +19,8 @@ def args_and_config():
                         help="Choose the mode of runner")
     parser.add_argument("--config", type=str, default='ddim-cifar10.yml',
                         help="Choose the config file")
+    parser.add_argument("--model", type=str, default='DDIM',
+                        help="Choose the model's structure (DDIM, iDDPM)")
     parser.add_argument("--method", type=str, default='F-PNDM',
                         help="Choose the numerical methods (DDIM, FON, S-PNDM, F-PNDM)")
     parser.add_argument("--sample_step", type=int, default=50,
@@ -61,7 +63,10 @@ if __name__ == "__main__":
 
     device = th.device(args.device)
     schedule = Schedule(args, config['Schedule'])
-    model = Model(args, config['Model']).to(device)
+    if args.model == 'DDIM':
+        model = Model(args, config['Model']).to(device)
+    elif args.model == 'iDDPM':
+        model = UNetModel(args, config['Model']).to(device)
 
     runner = Runner(args, config, schedule, model)
     if args.runner == 'train':
