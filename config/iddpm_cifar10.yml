@@ -14,7 +14,7 @@ Dataset:
   dataset: 'CIFAR10'
   image_size: 32
   channels: 3
-  batch_size: 64
+  batch_size: 256
   logit_transform: false
   uniform_dequantization: false
   gaussian_dequantization: false
@@ -44,12 +44,6 @@ Train:
   ema_rate: 0.9999
   ema: True
 
-Sample:
-  mpi4py: true
-  batch_size: 512
-  last_only: True
-  total_num: 2500
-
 Optim:
   weight_decay: 0.000
   optimizer: 'adam'
@@ -58,4 +52,12 @@ Optim:
   amsgrad: false
   eps: 0.00000001
   grad_clip: 1.0
+
+Sample:
+  mpi4py: true
+  batch_size: 512
+  last_only: True
+  total_num: 2500
+
+
 

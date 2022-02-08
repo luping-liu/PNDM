@@ -6,7 +6,7 @@ import torchvision.transforms.functional as F
 from torchvision.datasets import CIFAR10
 from dataset.celeba import CelebA
 # from dataset.ffhq import FFHQ
-# from dataset.lsun import LSUN
+from dataset.lsun import LSUN
 from torch.utils.data import Subset
 import numpy as np
 
@@ -106,46 +106,46 @@ def get_dataset(args, config):
             download=True,
         )
 
-    # elif config.data.dataset == "LSUN":
-    #     train_folder = "{}_train".format(config.data.category)
-    #     val_folder = "{}_val".format(config.data.category)
-    #     if config.data.random_flip:
-    #         dataset = LSUN(
-    #             root=os.path.join(args.exp, "datasets", "lsun"),
-    #             classes=[train_folder],
-    #             transform=transforms.Compose(
-    #                 [
-    #                     transforms.Resize(config.data.image_size),
-    #                     transforms.CenterCrop(config.data.image_size),
-    #                     transforms.RandomHorizontalFlip(p=0.5),
-    #                     transforms.ToTensor(),
-    #                 ]
-    #             ),
-    #         )
-    #     else:
-    #         dataset = LSUN(
-    #             root=os.path.join(args.exp, "datasets", "lsun"),
-    #             classes=[train_folder],
-    #             transform=transforms.Compose(
-    #                 [
-    #                     transforms.Resize(config.data.image_size),
-    #                     transforms.CenterCrop(config.data.image_size),
-    #                     transforms.ToTensor(),
-    #                 ]
-    #             ),
-    #         )
-    #
-    #     test_dataset = LSUN(
-    #         root=os.path.join(args.exp, "datasets", "lsun"),
-    #         classes=[val_folder],
-    #         transform=transforms.Compose(
-    #             [
-    #                 transforms.Resize(config.data.image_size),
-    #                 transforms.CenterCrop(config.data.image_size),
-    #                 transforms.ToTensor(),
-    #             ]
-    #         ),
-    #     )
+    elif config['dataset'] == "LSUN":
+        train_folder = "{}_train".format(config['category'])
+        val_folder = "{}_val".format(config['category'])
+        if config['random_flip']:
+            dataset = LSUN(
+                root=os.path.join(args.exp, "datasets", "lsun"),
+                classes=[train_folder],
+                transform=transforms.Compose(
+                    [
+                        transforms.Resize(config['image_size']),
+                        transforms.CenterCrop(config['image_size']),
+                        transforms.RandomHorizontalFlip(p=0.5),
+                        transforms.ToTensor(),
+                    ]
+                ),
+            )
+        else:
+            dataset = LSUN(
+                root=os.path.join(args.exp, "datasets", "lsun"),
+                classes=[train_folder],
+                transform=transforms.Compose(
+                    [
+                        transforms.Resize(config['image_size']),
+                        transforms.CenterCrop(config['image_size']),
+                        transforms.ToTensor(),
+                    ]
+                ),
+            )
+
+        test_dataset = LSUN(
+            root=os.path.join(args.exp, "datasets", "lsun"),
+            classes=[val_folder],
+            transform=transforms.Compose(
+                [
+                    transforms.Resize(config['image_size']),
+                    transforms.CenterCrop(config['image_size']),
+                    transforms.ToTensor(),
+                ]
+            ),
+        )
     #
     # elif config.data.dataset == "FFHQ":
     #     if config.data.random_flip:

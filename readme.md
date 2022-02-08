@@ -6,9 +6,10 @@ This repo is the official PyTorch implementation for the paper [Pseudo Numerical
 by Luping Liu, Yi Ren, Zhijie Lin, Zhou Zhao (Zhejiang University).
 
 ## What does this code do?
-This code is a generic framework for DDIM-like models including:
+This code is not only the official implementation for PNDM, but also a generic framework for DDIM-like models including:
 - [x] [Pseudo Numerical Methods for Diffusion Models on Manifolds (PNDM)](https://openreview.net/forum?id=PlKWVd2yBkY)
 - [x] [Denoising Diffusion Implicit Models (DDIM)](https://arxiv.org/abs/2010.02502)
+- [ ] [Score-Based Generative Modeling through Stochastic Differential Equations (PF)](https://arxiv.org/abs/2011.13456)
 - [x] [Improved Denoising Diffusion Probabilistic Models (iDDPM)](https://arxiv.org/abs/2102.09672)
 
 ## How to run the code
