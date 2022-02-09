@@ -32,6 +32,7 @@ class Runner(object):
         self.args = args
         self.config = config
         self.diffusion_step = config['Schedule']['diffusion_step']
+        self.sample_speed = args.sample_speed
         self.device = th.device(args.device)
 
         self.schedule = schedule
@@ -158,7 +159,7 @@ class Runner(object):
             for i in range(img.shape[0]):
                 if image_num+i > total_num:
                     break
-                tvu.save_image(img[i], os.path.join(self.args.image_path, f"{mpi_rank}-{image_num+i}.png"))
+                tvu.save_image(img[i], os.path.join(self.args.image_path, f"{mpi_rank}-{image_num+i}.jpg"))
 
             image_num += n
 
@@ -167,6 +168,7 @@ class Runner(object):
             if pflow:
                 shape = noise.shape
                 device = self.device
+                tol = 1e-5 if self.sample_speed > 1 else self.sample_speed
 
                 def drift_func(t, x):
                     x = th.from_numpy(x.reshape(shape)).to(device).type(th.float32)
@@ -175,7 +177,7 @@ class Runner(object):
                     return drift
 
                 solution = integrate.solve_ivp(drift_func, (1, 1e-3), noise.cpu().numpy().reshape((-1,)),
-                                               rtol=1e-5, atol=1e-5, method='RK45')
+                                               rtol=tol, atol=tol, method='RK45')
                 img = th.tensor(solution.y[:, -1]).reshape(shape).type(th.float32)
 
             else:
@@ -196,4 +198,5 @@ class Runner(object):
                     imgs.append(img_next.to('cpu'))
 
                 img = imgs[-1]
+
             return img

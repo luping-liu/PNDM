@@ -24,11 +24,11 @@ Tip: mpi4py can make the generation process faster using multi-gpus. It is not n
 ### Usage
 Evaluate our models through main.py.
 ```bash
-python main.py --runner sample --method F-PNDM --sample_step 50 --device cuda --config ddim-cifar10.yml --image_path temp/results --model_path temp/models/ddim/ema_cifar10.ckpt
+python main.py --runner sample --method F-PNDM --sample_speed 50 --device cuda --config ddim-cifar10.yml --image_path temp/results --model_path temp/models/ddim/ema_cifar10.ckpt
 ```
 - runner (train|sample): choose the mode of runner 
 - method (DDIM|FON|S-PNDM|F-PNDM|PF): choose the numerical methods
-- sample_step: choose the total generation step
+- sample_speed: control the total generation step
 - device (cpu|cuda:0): choose the device to use
 - config: choose the config file
 - image_path: choose the path to save images

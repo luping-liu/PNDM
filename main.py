@@ -14,19 +14,19 @@ def args_and_config():
 
     parser.add_argument("--runner", type=str, default='sample',
                         help="Choose the mode of runner")
-    parser.add_argument("--config", type=str, default='pf_cifar10.yml',
+    parser.add_argument("--config", type=str, default='pf_deep_cifar10.yml',
                         help="Choose the config file")
     parser.add_argument("--model", type=str, default='DDIM',
                         help="Choose the model's structure (DDIM, iDDPM, PF)")
     parser.add_argument("--method", type=str, default='F-PNDM',
                         help="Choose the numerical methods (DDIM, FON, S-PNDM, F-PNDM, PF)")
-    parser.add_argument("--sample_step", type=int, default=50,
-                        help="Choose the total generation step")
+    parser.add_argument("--sample_speed", type=int, default=50,
+                        help="Control the total generation step")
     parser.add_argument("--device", type=str, default='cuda',
                         help="Choose the device to use")
     parser.add_argument("--image_path", type=str, default='temp/sample',
                         help="Choose the path to save images")
-    parser.add_argument("--model_path", type=str, default='temp/models/pf_cifar10.ckpt',
+    parser.add_argument("--model_path", type=str, default='temp/models/pf_deep_cifar10.ckpt',
                         help="Choose the path of model")
     parser.add_argument("--restart", action="store_true",
                         help="Restart a previous training process")
@@ -69,6 +69,9 @@ if __name__ == "__main__":
     elif config['Model']['struc'] == 'PF':
         from model.scoresde.ddpm import DDPM
         model = DDPM(args, config['Model']).to(device)
+    elif config['Model']['struc'] == 'PF_deep':
+        from model.scoresde.ncsnpp import NCSNpp
+        model = NCSNpp(args, config['Model']).to(device)
     else:
         model = None
 

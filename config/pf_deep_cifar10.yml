@@ -1,0 +1,66 @@
+Schedule:
+  type: 'linear'
+  beta_start: 0.0001
+  beta_end: 0.02
+  diffusion_step: 1000
+
+Dataset:
+  dataset: 'CIFAR10'
+  image_size: 32
+  channels: 3
+  batch_size: 64
+  logit_transform: false
+  uniform_dequantization: false
+  gaussian_dequantization: false
+  random_flip: true
+  rescaled: true
+  num_workers: 6
+
+Model:
+  struc: 'PF_deep'
+  image_size: 32
+  num_channels: 3
+  nf: 128
+  ch_mult: [ 1, 2, 2, 2 ]
+  num_res_blocks: 8
+  attn_resolutions: [ 16, ]
+  dropout: 0.1
+  nonlinearity: 'swish'
+  resamp_with_conv: true
+  conditional: true
+  skip_rescale: true
+  resblock_type: 'biggan'
+  progressive: none
+  progressive_input: none
+  embedding_type: 'positional'
+  init_scale: 0.0
+  combine_method: 'sum'
+  fir: false
+  fir_kernel: [ 1, 3, 3, 1 ]
+  continuous: true
+  centered: true
+  fourier_scale: 16
+  scale_by_sigma: false
+
+Train:
+  epoch: 1000
+  loss_type: 'linear'
+  ema_rate: 0.9999
+  ema: True
+
+Optim:
+  weight_decay: 0.000
+  optimizer: 'adam'
+  lr: 0.0002
+  beta1: 0.9
+  amsgrad: false
+  eps: 0.00000001
+  grad_clip: 1.0
+
+Sample:
+  mpi4py: true
+  batch_size: 512
+  last_only: True
+  total_num: 2500
+
+
