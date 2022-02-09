@@ -42,7 +42,7 @@ class Schedule(object):
         self.alphas_cump_pre = th.cat([th.ones(1).to(device), self.alphas_cump[:-1]], dim=0)
         self.total_step = config['diffusion_step']
 
-        self.method = mtd.choose_method(args.method)
+        self.method = mtd.choose_method(args.method)  # add pflow
         self.ets = None
 
     def diffusion(self, img, t_end, t_start=0, noise=None):
@@ -53,9 +53,15 @@ class Schedule(object):
 
         return img_n, noise
 
-    def denoising(self, img_n, t_end, t_start, model, first_step=False):
-        if first_step:
-            self.ets = []
-        img_next = self.method(img_n, t_start, t_end, model, self.alphas_cump, self.ets)
+    def denoising(self, img_n, t_end, t_start, model, first_step=False, pflow=False):
+        if pflow:
+            drift = self.method(img_n, t_start, t_end, model, self.betas, self.total_step)
 
-        return img_next
+            return drift
+        else:
+            if first_step:
+                self.ets = []
+            img_next = self.method(img_n, t_start, t_end, model, self.alphas_cump, self.ets)
+
+            return img_next
+

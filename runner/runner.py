@@ -3,11 +3,12 @@ import sys
 import tqdm
 import time
 import torch as th
+import numpy as np
 import torch.optim as optimi
 import torch.utils.data as data
 import torchvision.utils as tvu
 import torch.utils.tensorboard as tb
-import numpy as np
+from scipy import integrate
 
 from dataset import get_dataset, inverse_data_transform
 from model.ema import EMAHelper
@@ -128,6 +129,7 @@ class Runner(object):
 
         model = self.model
         device = self.device
+        pflow = True if self.args.method == 'PF' else False
 
         model.load_state_dict(th.load(self.args.model_path, map_location=device), strict=True)
         model.eval()
@@ -150,7 +152,7 @@ class Runner(object):
             noise = th.randn(n, config['channels'], config['image_size'],
                              config['image_size'], device=self.device)
 
-            img = self.sample_image(noise, seq, model)
+            img = self.sample_image(noise, seq, model, pflow)
 
             img = inverse_data_transform(config, img)
             for i in range(img.shape[0]):
@@ -160,23 +162,38 @@ class Runner(object):
 
             image_num += n
 
-    def sample_image(self, noise, seq, model):
+    def sample_image(self, noise, seq, model, pflow=False):
         with th.no_grad():
-            imgs = [noise]
-            seq_next = [-1] + list(seq[:-1])
+            if pflow:
+                shape = noise.shape
+                device = self.device
 
-            start = True
-            n = noise.shape[0]
+                def drift_func(t, x):
+                    x = th.from_numpy(x.reshape(shape)).to(device).type(th.float32)
+                    drift = self.schedule.denoising(x, None, t, model, pflow=pflow)
+                    drift = drift.cpu().numpy().reshape((-1,))
+                    return drift
 
-            for i, j in zip(reversed(seq), reversed(seq_next)):
-                t = (th.ones(n) * i).to(self.device)
-                t_next = (th.ones(n) * j).to(self.device)
+                solution = integrate.solve_ivp(drift_func, (1, 1e-3), noise.cpu().numpy().reshape((-1,)),
+                                               rtol=1e-5, atol=1e-5, method='RK45')
+                img = th.tensor(solution.y[:, -1]).reshape(shape).type(th.float32)
 
-                img_t = imgs[-1].to(self.device)
-                img_next = self.schedule.denoising(img_t, t_next, t, model, start)
-                start = False
+            else:
+                imgs = [noise]
+                seq_next = [-1] + list(seq[:-1])
 
-                imgs.append(img_next.to('cpu'))
+                start = True
+                n = noise.shape[0]
 
-            img = imgs[-1]
+                for i, j in zip(reversed(seq), reversed(seq_next)):
+                    t = (th.ones(n) * i).to(self.device)
+                    t_next = (th.ones(n) * j).to(self.device)
+
+                    img_t = imgs[-1].to(self.device)
+                    img_next = self.schedule.denoising(img_t, t_next, t, model, start, pflow)
+                    start = False
+
+                    imgs.append(img_next.to('cpu'))
+
+                img = imgs[-1]
             return img

@@ -19,7 +19,7 @@ def args_and_config():
     parser.add_argument("--model", type=str, default='DDIM',
                         help="Choose the model's structure (DDIM, iDDPM, PF)")
     parser.add_argument("--method", type=str, default='F-PNDM',
-                        help="Choose the numerical methods (DDIM, FON, S-PNDM, F-PNDM)")
+                        help="Choose the numerical methods (DDIM, FON, S-PNDM, F-PNDM, PF)")
     parser.add_argument("--sample_step", type=int, default=50,
                         help="Choose the total generation step")
     parser.add_argument("--device", type=str, default='cuda',

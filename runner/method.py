@@ -12,8 +12,28 @@ def choose_method(name):
         return gen_order_4
     elif name == 'FON':
         return gen_fon
+    elif name == 'PF':
+        return gen_pflow
     else:
         return None
+
+
+def gen_pflow(img, t, t_next, model, betas, total_step):
+    n = img.shape[0]
+    beta_0, beta_1 = betas[0], betas[-1]
+
+    t_start = th.ones(n, device=img.device) * t
+    beta_t = (beta_0 + t_start * (beta_1 - beta_0)) * total_step
+
+    log_mean_coeff = (-0.25 * t_start ** 2 * (beta_1 - beta_0) - 0.5 * t_start * beta_0) * total_step
+    std = th.sqrt(1. - th.exp(2. * log_mean_coeff))
+
+    # drift, diffusion -> f(x,t), g(t)
+    drift, diffusion = -0.5 * beta_t.view(-1, 1, 1, 1) * img, th.sqrt(beta_t)
+    score = - model(img, t_start * (total_step - 1)) / std.view(-1, 1, 1, 1)  # score -> noise
+    drift = drift - diffusion.view(-1, 1, 1, 1) ** 2 * score * 0.5  # drift -> dx/dt
+
+    return drift
 
 
 def gen_fon(img, t, t_next, model, alphas_cump, ets):
