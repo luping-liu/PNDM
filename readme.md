@@ -12,6 +12,22 @@ This code is not only the official implementation for PNDM, but also a generic f
 - [x] [Score-Based Generative Modeling through Stochastic Differential Equations (PF)](https://arxiv.org/abs/2011.13456)
 - [x] [Improved Denoising Diffusion Probabilistic Models (iDDPM)](https://arxiv.org/abs/2102.09672)
 
+### Structure
+This code contains three main objects including method, schedule and model. Method defines the numerical method
+used to generate samples. Schedule defines the schedule of adding noise. Model defines the neural network used 
+to fit noise. 
+
+The following table shows objects supported by this code.
+
+| Object   | Option                        |
+|----------|-------------------------------|
+| method   | DDIM, S-PNDM, F-PNDM, FON, PF |
+| schedule | linear, quad, cosine          |
+| model    | DDIM, iDDPM, PF, PF_deep      |
+
+All of them can be combined at will, so this code provide at least 5x3x4=60 choices to generate samples.
+
+
 ## How to run the code
 
 ### Dependencies
@@ -42,6 +58,7 @@ python main.py --runner train --device cuda --config ddim-cifar10.yml --train_pa
 
 ### Checkpoints & statistics
 All checkpoints of models and precalculated statistics for FID are provided in this [Onedrive](https://zjueducn-my.sharepoint.com/:f:/g/personal/3170105432_zju_edu_cn/EhjaZe0ZhnxOrPvejWp0f-cBv8F0xOL9J8xaVyor0fLZEA).
+
 
 ## References
 If you find the code useful for your research, please consider citing:
