@@ -14,7 +14,6 @@
 
 import os
 import sys
-import tqdm
 import time
 import torch as th
 import numpy as np
@@ -23,6 +22,7 @@ import torch.utils.data as data
 import torchvision.utils as tvu
 import torch.utils.tensorboard as tb
 from scipy import integrate
+from tqdm.auto import tqdm
 
 from dataset import get_dataset, inverse_data_transform
 from model.ema import EMAHelper
@@ -159,7 +159,7 @@ class Runner(object):
 
         config = self.config['Dataset']
         if mpi_rank == 0:
-            my_iter = tqdm.tqdm(range(total_num // n + 1), ncols=120)
+            my_iter = tqdm(range(total_num // n + 1), ncols=120)
         else:
             my_iter = range(total_num // n + 1)
 

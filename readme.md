@@ -13,17 +13,14 @@ This code is not only the official implementation for PNDM, but also a generic f
 - [x] [Improved Denoising Diffusion Probabilistic Models (iDDPM)](https://arxiv.org/abs/2102.09672)
 
 ### Structure
-This code contains three main objects including method, schedule and model. Method defines the numerical method
-used to generate samples. Schedule defines the schedule of adding noise. Model defines the neural network used 
-to fit noise. 
+This code contains three main objects including method, schedule and model. The following table shows the options 
+supported by this code and the role of each object.
 
-The following table shows objects supported by this code.
-
-| Object   | Option                        |
-|----------|-------------------------------|
-| method   | DDIM, S-PNDM, F-PNDM, FON, PF |
-| schedule | linear, quad, cosine          |
-| model    | DDIM, iDDPM, PF, PF_deep      |
+| Object   | Option                        | Role                                          |
+|----------|-------------------------------|-----------------------------------------------|
+| method   | DDIM, S-PNDM, F-PNDM, FON, PF | the numerical method used to generate samples |
+| schedule | linear, quad, cosine          | the schedule of adding noise to images        |
+| model    | DDIM, iDDPM, PF, PF_deep      | the neural network used to fit noise          |
 
 All of them can be combined at will, so this code provide at least 5x3x4=60 choices to generate samples.
 
@@ -72,7 +69,7 @@ If you find the code useful for your research, please consider citing:
 }
 ```
 This work is built upon some previous papers which might also interest you:
-- Jonathan Ho, Ajay Jain, and Pieter Abbeel. Denoising diffusion probabilistic models. arXiv, 256, 2020.
-- Jiaming Song, Chenlin Meng, and Stefano Ermon. Denoising Diffusion Implicit Models. arXiv preprint, pp. 1–19, 2020a.
-- Yang Song, Jascha Sohl-Dickstein, Diederik P. Kingma, Abhishek Kumar, Stefano Ermon, and Ben Poole. Score-Based Generative Modeling through Stochastic Differential Equations. pp. 1–32, 2020b.
+- Jonathan Ho, Ajay Jain, and Pieter Abbeel. Denoising diffusion probabilistic models. Advances in Neural Information Processing Systems 33 (2020): 6840-6851.
+- Jiaming Song, Chenlin Meng, and Stefano Ermon. Denoising Diffusion Implicit Models. International Conference on Learning Representations. 2020.
+- Yang Song, Jascha Sohl-Dickstein, Diederik P. Kingma, Abhishek Kumar, Stefano Ermon, and Ben Poole. Score-Based Generative Modeling through Stochastic Differential Equations. International Conference on Learning Representations. 2020.
 
