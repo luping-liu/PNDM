@@ -28,7 +28,7 @@ def args_and_config():
 
     parser.add_argument("--runner", type=str, default='sample',
                         help="Choose the mode of runner")
-    parser.add_argument("--config", type=str, default='pf_deep_cifar10.yml',
+    parser.add_argument("--config", type=str, default='ddim_cifar10.yml',
                         help="Choose the config file")
     parser.add_argument("--model", type=str, default='DDIM',
                         help="Choose the model's structure (DDIM, iDDPM, PF)")
@@ -40,7 +40,7 @@ def args_and_config():
                         help="Choose the device to use")
     parser.add_argument("--image_path", type=str, default='temp/sample',
                         help="Choose the path to save images")
-    parser.add_argument("--model_path", type=str, default='temp/models/pf_deep_cifar10.ckpt',
+    parser.add_argument("--model_path", type=str, default='temp/models/ddim/ema_cifar10.ckpt',
                         help="Choose the path of model")
     parser.add_argument("--restart", action="store_true",
                         help="Restart a previous training process")

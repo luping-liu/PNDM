@@ -119,7 +119,7 @@ class Runner(object):
                     print(step, loss.item())
                 if step % 500 == 0:
                     config = self.config['Dataset']
-                    skip = self.diffusion_step // self.args.sample_step
+                    skip = self.diffusion_step // self.sample_speed
                     seq = range(0, self.diffusion_step, skip)
                     noise = th.randn(16, config['channels'], config['image_size'],
                                      config['image_size'], device=self.device)
@@ -152,7 +152,7 @@ class Runner(object):
         n = config['batch_size']
         total_num = config['total_num']
 
-        skip = self.diffusion_step // self.args.sample_step
+        skip = self.diffusion_step // self.sample_speed
         seq = range(0, self.diffusion_step, skip)
         seq_next = [-1] + list(seq[:-1])
         image_num = 0
