@@ -70,7 +70,7 @@ if __name__ == "__main__":
 
         comm = MPI.COMM_WORLD
         mpi_rank = comm.Get_rank()
-        os.environ['CUDA_VISIBLE_DEVICES'] = str(mpi_rank+2)
+        os.environ['CUDA_VISIBLE_DEVICES'] = str(mpi_rank)
 
     device = th.device(args.device)
     schedule = Schedule(args, config['Schedule'])

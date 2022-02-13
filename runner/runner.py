@@ -173,7 +173,7 @@ class Runner(object):
             for i in range(img.shape[0]):
                 if image_num+i > total_num:
                     break
-                tvu.save_image(img[i], os.path.join(self.args.image_path, f"{mpi_rank}-{image_num+i}.jpg"))
+                tvu.save_image(img[i], os.path.join(self.args.image_path, f"{mpi_rank}-{image_num+i}.png"))
 
             image_num += n
 

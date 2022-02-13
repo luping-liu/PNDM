@@ -49,7 +49,7 @@ Sample:
   mpi4py: false
   batch_size: 32
   last_only: True
-  total_num: 5000
+  total_num: 12500
 
 
 

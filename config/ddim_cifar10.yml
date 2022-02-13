@@ -36,12 +36,6 @@ Train:
   ema_rate: 0.9999
   ema: True
 
-Sample:
-  mpi4py: true
-  batch_size: 512
-  last_only: True
-  total_num: 2500
-
 Optim:
   weight_decay: 0.000
   optimizer: 'adam'
@@ -50,4 +44,11 @@ Optim:
   amsgrad: false
   eps: 0.00000001
   grad_clip: 1.0
+
+Sample:
+  mpi4py: true
+  batch_size: 512
+  last_only: True
+  total_num: 12500
+
 
