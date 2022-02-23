@@ -22,6 +22,7 @@ import torch.utils.data as data
 import torchvision.utils as tvu
 import torch.utils.tensorboard as tb
 from scipy import integrate
+from torchdiffeq import odeint
 from tqdm.auto import tqdm
 
 from dataset import get_dataset, inverse_data_transform
