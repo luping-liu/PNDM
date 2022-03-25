@@ -37,7 +37,7 @@ Tip: mpi4py can make the generation process faster using multi-gpus. It is not n
 ### Usage
 Evaluate our models through main.py.
 ```bash
-python main.py --runner sample --method F-PNDM --sample_speed 50 --device cuda --config ddim-cifar10.yml --image_path temp/results --model_path temp/models/ddim/ema_cifar10.ckpt
+python main.py --runner sample --method F-PNDM --sample_speed 50 --device cuda --config ddim_cifar10.yml --image_path temp/results --model_path temp/models/ddim/ema_cifar10.ckpt
 ```
 - runner (train|sample): choose the mode of runner 
 - method (DDIM|FON|S-PNDM|F-PNDM|PF): choose the numerical methods
@@ -49,7 +49,7 @@ python main.py --runner sample --method F-PNDM --sample_speed 50 --device cuda -
 
 Train our models through main.py.
 ```bash
-python main.py --runner train --device cuda --config ddim-cifar10.yml --train_path temp/train
+python main.py --runner train --device cuda --config ddim_cifar10.yml --train_path temp/train
 ```
 - train_path: choose the path to save training status
 

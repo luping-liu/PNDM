@@ -22,7 +22,7 @@ import torch.utils.data as data
 import torchvision.utils as tvu
 import torch.utils.tensorboard as tb
 from scipy import integrate
-from torchdiffeq import odeint
+# from torchdiffeq import odeint
 from tqdm.auto import tqdm
 
 from dataset import get_dataset, inverse_data_transform
@@ -72,16 +72,16 @@ class Runner(object):
         else:
             ema = None
 
-        tb_logger = tb.SummaryWriter('temp/tensorboard')
+        tb_logger = tb.SummaryWriter(f'temp/tensorboard/{time.strftime("%m%d-%H%M")}')
         epoch, step = 0, 0
 
         if self.args.restart:
-            train_state = th.load(os.path.join(self.args.train_path, 'train.pth'), map_location=self.device)
+            train_state = th.load(os.path.join(self.args.train_path, 'train.ckpt'), map_location=self.device)
             model.load_state_dict(train_state[0])
             optim.load_state_dict(train_state[1])
             epoch, step = train_state[2:4]
             if ema is not None:
-                ema_state = th.load(os.path.join(self.args.train_path, 'ema.pth'), map_location=self.device)
+                ema_state = th.load(os.path.join(self.args.train_path, 'ema.ckpt'), map_location=self.device)
                 ema.load_state_dict(ema_state)
 
         for epoch in range(epoch, config['epoch']):
@@ -91,7 +91,7 @@ class Runner(object):
                 step += 1
                 t = th.randint(low=0, high=self.diffusion_step, size=(n // 2 + 1,))
                 t = th.cat([t, self.diffusion_step - t - 1], dim=0)[:n].to(self.device)
-                img = img.to(self.device)
+                img = img.to(self.device) * 2.0 - 1.0
 
                 img_n, noise = schedule.diffusion(img, t)
                 noise_p = model(img_n, t)
@@ -120,20 +120,22 @@ class Runner(object):
                     print(step, loss.item())
                 if step % 500 == 0:
                     config = self.config['Dataset']
+                    model.eval()
                     skip = self.diffusion_step // self.sample_speed
                     seq = range(0, self.diffusion_step, skip)
                     noise = th.randn(16, config['channels'], config['image_size'],
                                      config['image_size'], device=self.device)
                     img = self.sample_image(noise, seq, model)
-                    img = th.clamp(img, -1.0, 1.0)
+                    img = th.clamp(img * 0.5 + 0.5, 0.0, 1.0)
                     tb_logger.add_images('sample', img, global_step=step)
                     config = self.config['Train']
+                    model.train()
 
-                if step % 10000 == 0:
+                if step % 5000 == 0:
                     train_state = [model.state_dict(), optim.state_dict(), epoch, step]
-                    th.save(train_state, os.path.join(self.args.train_path, 'train.pth'))
+                    th.save(train_state, os.path.join(self.args.train_path, 'train.ckpt'))
                     if ema is not None:
-                        th.save(ema.state_dict(), os.path.join(self.args.train_path, 'ema.pth'))
+                        th.save(ema.state_dict(), os.path.join(self.args.train_path, 'ema.ckpt'))
 
     def sample_fid(self):
         config = self.config['Sample']

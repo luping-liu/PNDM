@@ -74,7 +74,7 @@ def get_dataset(args, config):
             transform=tran_transform,
         )
         test_dataset = CIFAR10(
-            os.path.join(os.getcwd(), "temp", "cifar10_test"),
+            os.path.join(os.getcwd(), "temp", "cifar10"),
             train=False,
             download=True,
             transform=test_transform,
@@ -133,7 +133,7 @@ def get_dataset(args, config):
         val_folder = "{}_val".format(config['category'])
         if config['random_flip']:
             dataset = LSUN(
-                root=os.path.join(args.exp, "datasets", "lsun"),
+                root=os.path.join(os.getcwd(), "temp", "lsun"),
                 classes=[train_folder],
                 transform=transforms.Compose(
                     [
@@ -146,7 +146,7 @@ def get_dataset(args, config):
             )
         else:
             dataset = LSUN(
-                root=os.path.join(args.exp, "datasets", "lsun"),
+                root=os.path.join(os.getcwd(), "temp", "lsun"),
                 classes=[train_folder],
                 transform=transforms.Compose(
                     [
@@ -158,7 +158,7 @@ def get_dataset(args, config):
             )
 
         test_dataset = LSUN(
-            root=os.path.join(args.exp, "datasets", "lsun"),
+            root=os.path.join(os.getcwd(), "temp", "lsun"),
             classes=[val_folder],
             transform=transforms.Compose(
                 [
