@@ -55,8 +55,9 @@ def gen_fon(img, t, t_next, model, alphas_cump, ets):
     if len(ets) > 2:
         noise = model(img, t)
         img_next = transfer(img, t, t-1, noise, alphas_cump)
-        delta = img_next - img
-        ets.append(delta)
+        delta1 = img_next - img
+        ets.append(delta1)
+        delta = (1 / 24) * (55 * ets[-1] - 59 * ets[-2] + 37 * ets[-3] - 9 * ets[-4])
     else:
         noise = model(img, t_list[0])
         img_ = transfer(img, t, t - 1, noise, alphas_cump)
