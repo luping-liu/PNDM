@@ -5,6 +5,54 @@ This repo is the official PyTorch implementation for the paper [Pseudo Numerical
 
 by Luping Liu, Yi Ren, Zhijie Lin, Zhou Zhao (Zhejiang University).
 
+## **Integration with 🤗 Diffusers library**
+
+PNDM is now also available in 🧨 Diffusers and accesible via the [PNDMPipeline](https://huggingface.co/docs/diffusers/api/pipelines/pndm).
+Diffusers allows you to test PNDM in PyTorch in just a couple lines of code.
+
+You can install diffusers as follows:
+
+```
+pip install diffusers torch accelerate
+```
+
+And then try out the sampler/scheduler with just a couple lines of code:
+
+```python
+from diffusers import PNDMPipeline
+
+model_id = "google/ddpm-cifar10-32"
+
+# load model and scheduler
+pndm = PNDMPipeline.from_pretrained(model_id)
+
+# run pipeline in inference (sample random noise and denoise)
+image = pndm(num_inference_steps=50).images[0]
+
+# save image
+image.save("pndm_generated_image.png")
+```
+
+The PNDM scheduler can also be used with more powerful diffusion models such as [Stable Diffusion](https://huggingface.co/docs/diffusers/v0.7.0/en/api/pipelines/stable_diffusion#stable-diffusion-pipelines)
+
+You simply need to [accept the license on the Hub](https://huggingface.co/runwayml/stable-diffusion-v1-5), login with `huggingface-cli login` and install transformers:
+
+```
+pip install transformers
+```
+
+Then you can run:
+
+```python
+from diffusers import StableDiffusionPipeline, PNDMScheduler
+
+pndm = PNDMScheduler.from_config("runwayml/stable-diffusion-v1-5", subfolder="scheduler")
+pipeline = StableDiffusionPipeline.from_pretrained("runwayml/stable-diffusion-v1-5", scheduler=pndm)
+
+image = pipeline("An astronaut riding a horse.").images[0]
+image.save("astronaut_riding_a_horse.png")
+```
+
 ## What does this code do?
 This code is not only the official implementation for PNDM, but also a generic framework for DDIM-like models including:
 - [x] [Pseudo Numerical Methods for Diffusion Models on Manifolds (PNDM)](https://openreview.net/forum?id=PlKWVd2yBkY)
