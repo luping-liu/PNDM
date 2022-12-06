@@ -1,9 +1,9 @@
-# Pseudo Numerical Methods for Diffusion Models on Manifolds (PNDM)
+# Pseudo Numerical Methods for Diffusion Models on Manifolds (PNDM, PLMS | ICLR2022)
 [![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/pseudo-numerical-methods-for-diffusion-models-1/image-generation-on-celeba-64x64)](https://paperswithcode.com/sota/image-generation-on-celeba-64x64?p=pseudo-numerical-methods-for-diffusion-models-1)
 
-This repo is the official PyTorch implementation for the paper [Pseudo Numerical Methods for Diffusion Models on Manifolds](https://openreview.net/forum?id=PlKWVd2yBkY)
+This repo is the official PyTorch implementation for the paper [Pseudo Numerical Methods for Diffusion Models on Manifolds](https://openreview.net/forum?id=PlKWVd2yBkY) (PNDM, PLMS | ICLR2022)
 
-by Luping Liu, Yi Ren, Zhijie Lin, Zhou Zhao (Zhejiang University).
+by [Luping Liu](https://luping-liu.github.io/), [Yi Ren](https://rayeren.github.io/), Zhijie Lin, Zhou Zhao (Zhejiang University).
 
 
 ## What does this code do?
