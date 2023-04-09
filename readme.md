@@ -104,7 +104,7 @@ python main.py --runner train --device cuda --config ddim_cifar10.yml --train_pa
 - train_path: choose the path to save training status
 
 ### Checkpoints & statistics
-All checkpoints of models and precalculated statistics for FID are provided in this [Onedrive](https://zjueducn-my.sharepoint.com/:f:/g/personal/3170105432_zju_edu_cn/EhjaZe0ZhnxOrPvejWp0f-cBv8F0xOL9J8xaVyor0fLZEA).
+All checkpoints of models and precalculated statistics for FID are provided in this [aliyundrive](https://www.aliyundrive.com/s/EqfDAXK9Qgh).
 
 
 ## References
